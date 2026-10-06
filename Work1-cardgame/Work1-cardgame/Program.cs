@@ -10,10 +10,32 @@ Random random = new Random();
 
 bool isGameover = false;
 
-             // 제목
-
+           
 CreateBoard();
+
+//---미리보기---
+for (int i = 0; i < ROW; i++)
+{
+    for (int j = 0; j < COL; j++)
+    {        
+        isPublic[i, j] = true;
+    }
+}
 PrintBoard();
+Console.WriteLine("시작하려면 아무 키나 누르세요.");
+Console.ReadKey(true);
+
+for (int i = 0; i < ROW; i++)
+{
+    for (int j = 0; j < COL; j++)
+    {
+        isPublic[i, j] = false;
+    }
+}
+//------
+
+PrintBoard();
+
 while (!isGameover)
 {
     Turn();
@@ -41,15 +63,15 @@ bool GameoverCheck()
 
 void Turn()
 {
-    var card1 = GetCardNumber();
+    var card1 = GetCardNumber(1);
     //Console.WriteLine($"{card1.row} {card1.col}");
-    var card2 = GetCardNumber();
+    var card2 = GetCardNumber(2);
     //Console.WriteLine($"{card2.row} {card2.col}");
 
     while (card1 == card2)
     {        
         Console.WriteLine("다른 카드를 입력해주세요");
-        card2 = GetCardNumber();
+        card2 = GetCardNumber(2);
     }
 
     count++;
@@ -59,7 +81,7 @@ void Turn()
         isPublic[card1.row, card1.col] = true;
         isPublic[card2.row, card2.col] = true;
         
-        Console.Clear();
+        
         PrintBoard();
         return;
     }
@@ -68,7 +90,7 @@ void Turn()
         isPublic[card1.row, card1.col] = true;
         isPublic[card2.row, card2.col] = true;
 
-        Console.Clear();
+        
         PrintBoard();
 
         Console.WriteLine("계속하려면 아무 키나 누르세요.");
@@ -77,7 +99,7 @@ void Turn()
         isPublic[card1.row, card1.col] = false;
         isPublic[card2.row, card2.col] = false;
 
-        Console.Clear();
+        
         PrintBoard();
     }
          
@@ -87,13 +109,19 @@ void Turn()
 
 
 
-(int row, int col) GetCardNumber()
+(int row, int col) GetCardNumber(int step)
 {
     int row = 0;
     int col = 0;
+    string msg = step switch
+    {
+        1 => "첫 번째 카드 위치를 입력하세요. (행 열): ",
+        2 => "두 번째 카드 위치를 입력하세요. (행 열): ",
+        _ => "오류"
+    };
     while (true)
     {
-        Console.Write("숫자를 입력하세요 (행 열)");
+        Console.Write(msg);
         string input = Console.ReadLine().Trim();
         string[] parts = input.Split(' ');
         if (parts.Length != 2 || !int.TryParse(parts[0], out row) || !int.TryParse(parts[1], out col) || 
@@ -170,6 +198,7 @@ void CreateBoard()
 
 void PrintBoard()
 {
+    Console.Clear();
     Console.WriteLine();
     Console.WriteLine("======== 카드 맞추기 게임 ========");
     Console.Write($"{"",-5}");
@@ -198,5 +227,6 @@ void PrintBoard()
         }Console.WriteLine();
 
     }
+    Console.WriteLine();
     //Console.WriteLine($"시도 횟수: {count}");
 }
