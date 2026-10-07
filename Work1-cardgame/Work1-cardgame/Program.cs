@@ -8,7 +8,7 @@ int[,] board = new int[ROW, COL];
 int count = 0;
 Random random = new Random();
 
-bool isGameover = false;
+bool isGameclear = false;
 
            
 CreateBoard();
@@ -36,17 +36,17 @@ for (int i = 0; i < ROW; i++)
 
 PrintBoard();
 
-while (!isGameover)
+while (!isGameclear)
 {
     Turn();
-    isGameover= GameoverCheck();
+    isGameclear= GameclearCheck();
 }
 Console.WriteLine(new string('=', 34));
 Console.WriteLine("게임 종료!");
 Console.WriteLine($"시도 횟수: {count}");
 
 
-bool GameoverCheck()
+bool GameclearCheck()
 {
     for (int i = 0; i < ROW; i++)
     {
@@ -124,6 +124,7 @@ void Turn()
         Console.Write(msg);
         string input = Console.ReadLine().Trim();
         string[] parts = input.Split(' ');
+
         if (parts.Length != 2 || !int.TryParse(parts[0], out row) || !int.TryParse(parts[1], out col) || 
             row < 1 || row > ROW || col < 1 || col > COL)
         {
