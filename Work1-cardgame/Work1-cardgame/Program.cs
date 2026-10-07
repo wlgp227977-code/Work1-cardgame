@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 
 
 const int ROW = 4;
@@ -14,7 +13,7 @@ bool isGameclear = false;
            
 CreateBoard(board, ROW, COL);
 
-//---미리보기---
+//---미리보기--- 
 
 SetBoolBoard(isPublic, true);
 PrintBoard(board, isPublic);
