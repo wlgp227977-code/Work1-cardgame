@@ -123,10 +123,10 @@ void Turn(int[,] numberBoard, bool[,] boolBoard)
         string[] parts = input.Split(' ');
 
         if (parts.Length != 2 || !int.TryParse(parts[0], out row) || !int.TryParse(parts[1], out col) || 
-            row < 1 || row > ROW || col < 1 || col > COL)
+            row < 1 || row > boolBoard.GetLength(0) || col < 1 || col > boolBoard.GetLength(1))
         {
             Console.WriteLine("행과 열을 공백으로 구분하여 정수로 입력하세요.");
-            Console.WriteLine($"* 행은 1~{ROW}, 열은 1~{COL} 범위.");
+            Console.WriteLine($"* 행은 1~{boolBoard.GetLength(0)}, 열은 1~{boolBoard.GetLength(1)} 범위.");
             continue;
         }
 
