@@ -49,8 +49,7 @@ class Program
             int i = 0;
             int j = 0;
             if (parts.Length == 2 &&
-                !int.TryParse(parts[0], out i) &&
-                !int.TryParse(parts[1], out j))
+                            !(int.TryParse(parts[0], out i) && int.TryParse(parts[1], out j)))
             {
                 Console.WriteLine("[행, 열] 형식으로 숫자를 입력하세요");
                 continue;
