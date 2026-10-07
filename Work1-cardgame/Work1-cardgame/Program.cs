@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 
 const int ROW = 4;
@@ -11,48 +12,46 @@ Random random = new Random();
 bool isGameclear = false;
 
            
-CreateBoard();
+CreateBoard(board, ROW, COL);
 
 //---미리보기---
-for (int i = 0; i < ROW; i++)
-{
-    for (int j = 0; j < COL; j++)
-    {        
-        isPublic[i, j] = true;
-    }
-}
-PrintBoard();
+
+SetBoolBoard(isPublic, true);
+PrintBoard(board, isPublic);
 Console.WriteLine("시작하려면 아무 키나 누르세요.");
 Console.ReadKey(true);
-
-for (int i = 0; i < ROW; i++)
-{
-    for (int j = 0; j < COL; j++)
-    {
-        isPublic[i, j] = false;
-    }
-}
+SetBoolBoard(isPublic, false);
 //------
 
-PrintBoard();
+PrintBoard(board, isPublic);
 
 while (!isGameclear)
 {
-    Turn();
-    isGameclear= GameclearCheck();
+    Turn(board, isPublic);
+    isGameclear= GameclearCheck(isPublic);
 }
 Console.WriteLine(new string('=', 34));
 Console.WriteLine("게임 종료!");
 Console.WriteLine($"시도 횟수: {count}");
 
 
-bool GameclearCheck()
+
+void SetBoolBoard(bool[,] boolBoard, bool flag){
+    for (int i = 0; i < boolBoard.GetLength(0); i++)
+    {
+        for (int j = 0; j < boolBoard.GetLength(1); j++)
+        {
+            boolBoard[i, j] = flag;
+        }
+    }
+}
+bool GameclearCheck(bool[,] boolBoard)
 {
     for (int i = 0; i < ROW; i++)
     {
         for (int j = 0; j < COL; j++)
         {
-            if (!isPublic[i, j])
+            if (!boolBoard[i, j])
             {
                 return false;
             }
@@ -61,55 +60,53 @@ bool GameclearCheck()
     return true;
 }
 
-void Turn()
+void Turn(int[,] numberBoard, bool[,] boolBoard)
 {
-    var card1 = GetCardNumber(1);
+    var card1 = GetCardNumber(1, boolBoard);
     //Console.WriteLine($"{card1.row} {card1.col}");
-    var card2 = GetCardNumber(2);
+    var card2 = GetCardNumber(2, boolBoard);
     //Console.WriteLine($"{card2.row} {card2.col}");
 
     while (card1 == card2)
     {        
         Console.WriteLine("다른 카드를 입력해주세요");
-        card2 = GetCardNumber(2);
+        card2 = GetCardNumber(2, boolBoard);
     }
 
     count++;
 
-    if (board[card1.row, card1.col] == board[card2.row, card2.col])
+    if (numberBoard[card1.row, card1.col] == numberBoard[card2.row, card2.col])
     {
-        isPublic[card1.row, card1.col] = true;
-        isPublic[card2.row, card2.col] = true;
+        boolBoard[card1.row, card1.col] = true;
+        boolBoard[card2.row, card2.col] = true;
         
         
-        PrintBoard();
+        PrintBoard(numberBoard, boolBoard);
         return;
     }
     else
     {
-        isPublic[card1.row, card1.col] = true;
-        isPublic[card2.row, card2.col] = true;
+        boolBoard[card1.row, card1.col] = true;
+        boolBoard[card2.row, card2.col] = true;
 
         
-        PrintBoard();
+        PrintBoard(numberBoard, boolBoard);
 
         Console.WriteLine("계속하려면 아무 키나 누르세요.");
         Console.ReadKey(true);
 
-        isPublic[card1.row, card1.col] = false;
-        isPublic[card2.row, card2.col] = false;
+        boolBoard[card1.row, card1.col] = false;
+        boolBoard[card2.row, card2.col] = false;
 
         
-        PrintBoard();
+        PrintBoard(numberBoard, boolBoard);
     }
          
 }
 
 
 
-
-
-(int row, int col) GetCardNumber(int step)
+(int row, int col) GetCardNumber(int step, bool[,] boolBoard)
 {
     int row = 0;
     int col = 0;
@@ -133,7 +130,7 @@ void Turn()
             continue;
         }
 
-        if (isPublic[row - 1 , col - 1])
+        if (boolBoard[row - 1 , col - 1])
         {
             Console.WriteLine("이미 맞춘 카드입니다.");
             continue;
@@ -160,50 +157,34 @@ void Turn()
 
 
 
-void CreateBoard()
-{    
-    int[] nums = new int [ROW * COL];
-    for (int i = 0; i < ROW * COL; i++)
+void CreateBoard(int[,]numberBoard, int rowSize, int colSize)
+{
+    for (int i = 0; i < rowSize * colSize; i++)
     {
-        nums[i] = i % (ROW * COL / 2);
-        Console.Write(nums[i]);        
-    }   Console.WriteLine();
-
+        numberBoard[i / colSize, i % colSize] = i % (rowSize * colSize / 2) +1;
+    }
     for (int i = 0;i < random.Next(3, 15); i++)
     {
-        int a = random.Next(0, ROW * COL);
-        int b = random.Next(0, ROW * COL);
+        int a = random.Next(0, rowSize * colSize);
+        int b = random.Next(0, rowSize * colSize);
 
-        int temp = nums[a];
-        nums[a] = nums[b];
-        nums[b] = temp;
-    }
-    for (int i = 0; i < ROW * COL; i++)
-    {
-        Console.Write(nums[i]);
+        int temp =numberBoard[a/colSize, a%colSize];
+        numberBoard[a / colSize, a % colSize] = numberBoard[b / colSize, b % colSize];
+        numberBoard[b / colSize, b % colSize] = temp;
     }
 
-    for (int i = 0; i < ROW; i++)
-    {
-        for (int j = 0; j < COL; j++)
-        {
-            board[i, j] = nums[i * COL + j] + 1;
-            isPublic[i, j] = false;
-        }
-    }
 
-    
 }
 
 
 
-void PrintBoard()
+void PrintBoard(int[,] numberBoard, bool[,] boolBoard)
 {
     Console.Clear();
     Console.WriteLine();
     Console.WriteLine("======== 카드 맞추기 게임 ========");
     Console.Write($"{"",-5}");
-    for (int i =0; i < COL; i++)
+    for (int i =0; i < numberBoard.GetLength(0); i++)
     {
         string colName = $"{i + 1}열";
         Console.Write($"{colName,5}");
@@ -211,15 +192,15 @@ void PrintBoard()
     Console.WriteLine();
 
 
-    for (int i = 0; i < ROW; i++)
+    for (int i = 0; i < numberBoard.GetLength(0); i++)
     {
         string rowName = $"{i + 1}행";
         Console.Write($"{rowName, -5}");
-        for (int j = 0; j < COL; j++)
+        for (int j = 0; j < numberBoard.GetLength(1); j++)
         {
-            if (isPublic[i, j])
+            if (boolBoard[i, j])
             {
-                Console.Write($"{board[i, j], 5:D2}");
+                Console.Write($"{numberBoard[i, j], 5:D2}");
             }
             else
             {
