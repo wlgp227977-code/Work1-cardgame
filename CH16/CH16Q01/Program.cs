@@ -21,9 +21,6 @@ morning.Capacity = int.Parse(Console.ReadLine());
 Console.Write("오전 현재 신청 인원: ");
 morning.Enrolled = int.Parse(Console.ReadLine());
 
-Console.Write("오전 추가 신청 인원: ");
-int addMorning = int.Parse(Console.ReadLine());
-
 
 Course afternoon = new Course();
 Console.Write("오후 강좌 정원: ");
@@ -31,12 +28,34 @@ afternoon.Capacity = int.Parse(Console.ReadLine());
 Console.Write("오후 현재 신청 인원: ");
 afternoon.Enrolled = int.Parse(Console.ReadLine());
 
+
+Console.Write("오전 추가 신청 인원: ");
+int addMorning = int.Parse(Console.ReadLine());
+
 Console.Write("오후 추가 신청 인원: ");
 int addAfternoon = int.Parse(Console.ReadLine());
 
 
 Console.Write("오전: ");
-if ()
+if (morning.Enrolled + addMorning <= morning.Capacity)
+{
+    bool isSuccess = morning.TryEnroll(addMorning);
+    Console.WriteLine($"{isSuccess}, 잔여: {morning.GetRemaining()}");
+}
+
+Console.Write("오후: ");
+if (afternoon.Enrolled + addAfternoon <= afternoon.Capacity)
+{
+    bool isSuccess = afternoon.TryEnroll(addAfternoon);
+    Console.WriteLine($"{isSuccess}, 잔여: {afternoon.GetRemaining()}");
+}
+else
+{
+    bool isSuccess = afternoon.TryEnroll(addAfternoon);
+    Console.WriteLine($"{isSuccess}, 잔여: {afternoon.GetRemaining()}");
+}
+
+Console.WriteLine($"잔여 합계: {morning.GetRemaining() + afternoon.GetRemaining()}");
 
 
 

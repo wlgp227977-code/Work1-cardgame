@@ -14,14 +14,13 @@ namespace CH16Q01
 
         public bool TryEnroll(int count)
         {
-            if (count > 0 && count < Capacity)
+            if (count > 0 && count + Enrolled <= Capacity)
             {
                 Enrolled = Enrolled + count;
                 return true;
             }
             else
-            {
-                count = 0;
+            {                
                 return false;
             }
         }
